@@ -204,7 +204,7 @@ const CadastroPage = () => {
             <FaHome /> Cadastro
           </Link>
           <Link
-            to="/monitoramento"
+            to="/Monitoramento"
             className="flex items-center gap-2 text-green-700 hover:font-semibold"
           >
             <FaTractor /> Monitoramento
