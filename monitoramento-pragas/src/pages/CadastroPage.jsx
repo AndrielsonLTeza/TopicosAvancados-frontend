@@ -153,6 +153,8 @@ const CadastroPage = () => {
     setIsLoading(true);
     setError('');
 
+    try{
+
       console.log("cadastrando Cultura...");
       console.log("nome:", formDataCultura.nome);
       console.log("tempoCultivoDias:", formDataCultura.tempoCultivoDias);
@@ -179,7 +181,6 @@ const CadastroPage = () => {
             });
 
       console.log(response);
-      
     } catch (error) {
       console.log(error);
     } finally {
