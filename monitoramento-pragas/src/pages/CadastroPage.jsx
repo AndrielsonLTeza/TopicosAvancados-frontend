@@ -69,36 +69,33 @@ const CadastroPage = () => {
   };
 
  const [formDataDoenca, setFormDataDoen] = useState({
-      nome: '',
-      sintomas: '',
-      culturasAfetadas: '',
-      tratamentos: '',
+      nomeDoenca: '',
+      sintomasDoenca: '',
+      culturasAfetadasDoenca: '',
+      tratamentosDoenca: '',
     });
 
   const handleSubmitDoencas = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    // setIsLoading(true);
+    // setError('');
 
     try {
       console.log("cadastrando Doença..");
-      console.log("nome:", formDataDoenca.nome);
-      console.log("sintomas:", formDataDoenca.sintomas);
-      console.log("culturasAfetadas:", formDataDoenca.culturasAfetadas);
-      console.log("tratamentos:", formDataDoenca.tratamentos);
+      console.log("nome:", formDataDoenca.nomeDoenca);
+      console.log("sintomas:", formDataDoenca.sintomasDoenca);
+      console.log("culturasAfetadas:", formDataDoenca.culturasAfetadasDoenca);
+      console.log("tratamentos:", formDataDoenca.tratamentosDoenca);
 
-      const culturasAfetadas = parseInt(formDataDoenca.culturasAfetadas, 10);
-
-      if (isNaN(culturasAfetadas)) {
-        alert("As culturas afetadas tem que tem um numero valido .");
-        return;
-      }
+      const culturasAfetadasString = formDataDoenca.culturasAfetadasDoenca;
+      const culturasAfetadasArrayDeString = culturasAfetadasString.split(',').map(item => item.trim());
+      const culturasAfetadasInteiros = culturasAfetadasArrayDeString.map(Number);
 
       const response = await cadastrarTipoDoenca({
-              nome: formDataDoenca.nome,
-              sintomas: formDataDoenca.sintomas,
-              culturasAfetadas: formDataDoenca.culturasAfetadas,
-              tratamentos: formDataDoenca.tratamentos
+              nome: formDataDoenca.nomeDoenca,
+              sintomas: formDataDoenca.sintomasDoenca,
+              culturasAfetadas: culturasAfetadasInteiros,
+              tratamentos: formDataDoenca.tratamentosDoenca
             });
 
       console.log(response);
@@ -112,26 +109,34 @@ const CadastroPage = () => {
 
 
   const [formDataPraga, setFormDataPraga] = useState({
-      nome: '',
-      nomeCientifico: '',
-      descricao: '',
+      nomePraga: '',
+      nomeCientificoPraga: '',
+      culturasAfetadas: '',
+      descricaoPraga: '',
     });
   const handleSubmitPragas = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    // setIsLoading(true);
+    // setError('');
 
     try {
       console.log("cadastrando Praga...");
-      console.log("nome:", formDataPraga.nome);
-      console.log("nomeCientifico:", formDataPraga.nomeCientifico);
-      console.log("descricao:", formDataPraga.descricao);
+      console.log("nome:", formDataPraga.nomePraga);
+      console.log("nomeCientifico:", formDataPraga.nomeCientificoPraga);
+      console.log("culturas afetadas:", formDataPraga.culturasAfetadas);
+      console.log("descricao:", formDataPraga.descricaoPraga);
 
-        const response = await cadastrarTipoPraga({
-              nome: formDataProp.nome,
-              nomeCientifico: formDataProp.nomeCientifico,
-              descricao: formDataProp.descricao
-            });
+    // --- Transformação da string em lista de inteiros ---
+      const culturasAfetadasString = formDataPraga.culturasAfetadas;
+      const culturasAfetadasArrayDeString = culturasAfetadasString.split(',').map(item => item.trim());
+      const culturasAfetadasInteiros = culturasAfetadasArrayDeString.map(Number);
+
+      const response = await cadastrarTipoPraga({
+            nome: formDataProp.nomePraga,
+            nomeCientifico: formDataProp.nomeCientificoPraga,
+            descricao: formDataProp.descricaoPraga,
+            culturasAfetadas: culturasAfetadasInteiros
+          });
 
       console.log(response);
       
@@ -144,19 +149,19 @@ const CadastroPage = () => {
 
 
   const [formDataCultura, setFormDataCult] = useState({
-      nome: '',
+      nomeCultura: '',
       tempoCultivoDias: '',
       epocaPlantio: '',
     });
   const handleSubmitCultura = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    // setIsLoading(true);
+    // setError('');
 
     try{
 
       console.log("cadastrando Cultura...");
-      console.log("nome:", formDataCultura.nome);
+      console.log("nome:", formDataCultura.nomeCultura);
       console.log("tempoCultivoDias:", formDataCultura.tempoCultivoDias);
       console.log("epocaPlantio:", formDataCultura.epocaPlantio);
 
@@ -167,17 +172,10 @@ const CadastroPage = () => {
         return;
       }
 
-      const epocaPlantio = parseInt(formDataCultura.epocaPlantio, 10);
-
-      if (isNaN(epocaPlantio)) {
-        alert("O tempo de epoca de plantio deve ser um número válido.");
-        return;
-      }
-
       const response = await cadastrarCultura({
-              nome: formDataCultura.nome,
-              nomeCientifico: formDataCultura.nomeCientifico,
-              descricao: formDataCultura.descricao
+              nome: formDataCultura.nomeCultura,
+              tempoCultivoDias: formDataCultura.tempoCultivoDias,
+              epocaPlantio: formDataCultura.epocaPlantio
             });
 
       console.log(response);
@@ -204,7 +202,7 @@ const CadastroPage = () => {
             <FaHome /> Cadastro
           </Link>
           <Link
-            to="/MonitoramentoPage"
+            to="/monitoramento"
             className="flex items-center gap-2 text-green-700 hover:font-semibold"
           >
             <FaTractor /> Monitoramento
@@ -272,16 +270,25 @@ const CadastroPage = () => {
               <div className="flex gap-4 flex-wrap">
                 <input
                   type="text"
+                  name="nomeCultura"
+                  value={formDataCultura.nomeCultura}
+                  onChange={handleInputChange}
                   placeholder="Nome da cultura"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="tempoCultivoDias"
+                  value={formDataCultura.tempoCultivoDias}
+                  onChange={handleInputChange}
                   placeholder="Tempo de Cultivo em Dias"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="epocaPlantio"
+                  value={formDataCultura.epocaPlantio}
+                  onChange={handleInputChange}
                   placeholder="Epoca do plantio"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
@@ -301,21 +308,33 @@ const CadastroPage = () => {
               <div className="flex gap-4 flex-wrap">
                 <input
                   type="text"
+                  name="nomePraga"
+                  value={formDataPraga.nomePraga}
+                  onChange={handleInputChange}
                   placeholder="Nome da praga"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="nomeCientificoPraga"
+                  value={formDataPraga.nomeCientificoPraga}
+                  onChange={handleInputChange}
                   placeholder="Nome cientifico da praga"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="culturasAfetadas"
+                  value={formDataPraga.culturasAfetadas}
+                  onChange={handleInputChange}
                   placeholder="Culturas afetadas"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="descricaoPraga"
+                  value={formDataPraga.descricaoPraga}
+                  onChange={handleInputChange}
                   placeholder="Descrição"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
@@ -335,21 +354,33 @@ const CadastroPage = () => {
               <div className="flex gap-4 flex-wrap">
                 <input
                   type="text"
+                  name="nomeDoenca"
+                  value={formDataDoenca.nomeDoenca}
+                  onChange={handleInputChange}
                   placeholder="Nome da doença"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="sintomasDoenca"
+                  value={formDataDoenca.sintomasDoenca}
+                  onChange={handleInputChange}
                   placeholder="Sintoma da doença"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="culturasAfetadasDoenca"
+                  value={formDataDoenca.culturasAfetadasDoenca}
+                  onChange={handleInputChange}
                   placeholder="Culturas afetadas"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
                 <input
                   type="text"
+                  name="tratamentosDoenca"
+                  value={formDataDoenca.tratamentosDoenca}
+                  onChange={handleInputChange}
                   placeholder="Tratamentos"
                   className="border border-gray-300 rounded px-4 py-2 w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 transition"
                 />
